@@ -3,660 +3,541 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PULSE — Global Emergency GIS Dispatch & AVL Tree Navigation</title>
+  <title>PULSE - Global Emergency GIS & Hospital Dispatch System</title>
   
-  <!-- Tailwind CSS -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  
-  <!-- Google Fonts: Inter & JetBrains Mono -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
-  
-  <!-- Leaflet CSS & JS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <!-- Leaflet CSS & JS CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
   <style>
     body {
       font-family: 'Inter', sans-serif;
       background-color: #020617;
       color: #f8fafc;
-      overflow-x: hidden;
     }
     .font-mono {
       font-family: 'JetBrains Mono', monospace;
     }
-    /* Custom Scrollbars */
+    /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #0f172a;
+      background: #090d16;
     }
     ::-webkit-scrollbar-thumb {
-      background: #334155;
+      background: #1e293b;
       border-radius: 4px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #0284c7;
+      background: #334155;
     }
-    
-    /* Map Styles */
+    /* Map Container Styling */
     #map {
-      width: 100%;
       height: 100%;
-      background: #020617;
-      border-radius: 1rem;
+      width: 100%;
+      background-color: #090d16;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
     }
-    .leaflet-container {
-      background: #020617 !important;
-    }
-    
-    /* Pulse Animations */
+    /* Pulsing Signal Animations */
     @keyframes pulse-ring {
       0% { transform: scale(0.95); opacity: 0.8; }
-      50% { transform: scale(1.25); opacity: 0.3; }
+      50% { transform: scale(1.3); opacity: 0.2; }
       100% { transform: scale(0.95); opacity: 0.8; }
     }
-    .animate-pulse-ring {
+    .pulse-indicator {
       animation: pulse-ring 2s infinite ease-in-out;
     }
-
-    /* Custom Glassmorphic Cards */
-    .glass-card {
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(51, 65, 85, 0.6);
+    /* Custom Leaflet Map Controls Theme */
+    .leaflet-bar a, .leaflet-control-layers {
+      background-color: #0f172a !important;
+      color: #38bdf8 !important;
+      border-color: #1e293b !important;
+    }
+    .leaflet-control-layers-expanded {
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+      border: 1px solid #334155 !important;
     }
   </style>
 </head>
-<body class="h-screen w-screen flex flex-col justify-between p-3 gap-3">
+<body class="h-screen w-screen flex flex-col overflow-hidden bg-slate-950 text-slate-100">
 
-  <!-- TOP BAR / HEADER -->
-  <header class="glass-card rounded-2xl px-6 py-3 flex flex-wrap justify-between items-center z-20 shadow-2xl">
-    <div class="flex items-center gap-4">
-      <div class="w-11 h-11 bg-red-600 rounded-xl flex items-center justify-center text-white text-2xl shadow-lg shadow-red-600/40 animate-pulse">
-        <i class="fa-solid fa-bolt"></i>
+  <!-- TOP HEADER / BRANDING BAR -->
+  <header class="h-16 border-b border-slate-800 bg-slate-900/90 backdrop-blur px-6 flex items-center justify-between z-20 shrink-0">
+    <div class="flex items-center space-x-3">
+      <div class="h-10 w-10 rounded-lg bg-red-600/20 border border-red-500/40 flex items-center justify-center text-red-500 font-bold text-xl shadow-lg shadow-red-500/10">
+        <i class="fa-solid font-mono fa-heart-pulse"></i>
       </div>
       <div>
-        <div class="flex items-center gap-3">
-          <h1 class="text-2xl font-extrabold tracking-tight text-white flex items-center gap-2">
-            PULSE <span class="text-xs font-mono bg-cyan-950 text-cyan-400 border border-cyan-800 px-2 py-0.5 rounded-md">v2.4 GIS CORE</span>
-          </h1>
+        <div class="flex items-center space-x-2">
+          <h1 class="text-xl font-extrabold tracking-wider text-white">PULSE</h1>
+          <span class="px-2 py-0.5 text-xs font-mono bg-cyan-950 text-cyan-400 border border-cyan-800 rounded">v2.4 AVL-GIS</span>
         </div>
-        <p class="text-xs text-slate-400 font-mono">
-          Global Emergency Dispatch & AVL Tree Navigation System • Architect: <span class="text-cyan-400 font-bold">Surimalla Venkata Tejaswi</span>
-        </p>
+        <p class="text-xs text-slate-400">Emergency Dispatch System • Developed by Surimalla Venkata Tejaswi</p>
       </div>
     </div>
 
-    <!-- Quick Stats Bar -->
-    <div class="flex items-center gap-6 text-xs font-mono">
-      <div class="bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800 flex items-center gap-3">
-        <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></div>
-        <div>
-          <span class="text-slate-500 block">SYSTEM STATUS</span>
-          <span class="text-emerald-400 font-bold">DISPATCH ACTIVE</span>
-        </div>
+    <!-- Live Telemetry Summary Pill -->
+    <div class="hidden md:flex items-center space-x-6 text-xs font-mono">
+      <div class="flex items-center space-x-2">
+        <span class="h-2 w-2 rounded-full bg-emerald-500 pulse-indicator"></span>
+        <span class="text-slate-400">STATUS:</span>
+        <span class="text-emerald-400 font-bold">SYSTEM ACTIVE</span>
       </div>
-
-      <div class="bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800 flex items-center gap-3">
-        <i class="fa-solid fa-sitemap text-cyan-400 text-lg"></i>
-        <div>
-          <span class="text-slate-500 block">AVL TREE NODES</span>
-          <span class="text-cyan-400 font-bold" id="treeNodeCount">5 Hospitals Indexed</span>
-        </div>
+      <div class="flex items-center space-x-2">
+        <i class="fa-solid fa-tree-city text-cyan-400"></i>
+        <span class="text-slate-400">AVL TREE INDEX:</span>
+        <span class="text-cyan-400 font-bold">O(log N) BALANCED</span>
       </div>
-
-      <div class="bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800 flex items-center gap-3">
-        <i class="fa-solid fa-truck-medical text-red-400 text-lg"></i>
-        <div>
-          <span class="text-slate-500 block">ACTIVE UNITS</span>
-          <span class="text-red-400 font-bold" id="activeUnitsCount">3 Ambulances</span>
-        </div>
+      <div class="flex items-center space-x-2">
+        <i class="fa-solid fa-satellite text-amber-400"></i>
+        <span class="text-slate-400">MAP MODE:</span>
+        <span class="text-amber-400 font-bold">ESRI SATELLITE</span>
       </div>
-
-      <!-- Voice Dispatch Toggle -->
-      <button id="voiceToggleBtn" onclick="toggleVoice()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl border border-slate-700 flex items-center gap-2 transition-all">
-        <i class="fa-solid fa-volume-high text-cyan-400" id="voiceIcon"></i>
-        <span>Voice Enabled</span>
-      </button>
     </div>
   </header>
 
-  <!-- MAIN CONTENT AREA -->
-  <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-3 min-h-0 relative">
+  <!-- MAIN APP CONTAINER -->
+  <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
 
-    <!-- LEFT PANEL: Emergency Call Dispatcher & Hospitals (4 Cols) -->
-    <section class="lg:col-span-4 flex flex-col gap-3 h-full overflow-hidden">
+    <!-- LEFT CONTROL PANEL: PATIENT LOCATION & DISPATCH FORM -->
+    <aside class="w-full md:w-96 border-r border-slate-800 bg-slate-900/60 p-4 flex flex-col space-y-4 overflow-y-auto shrink-0 z-10">
       
-      <!-- Incident Report Panel -->
-      <div class="glass-card rounded-2xl p-4 flex flex-col gap-3">
-        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-          <h2 class="text-sm font-bold text-slate-200 flex items-center gap-2 font-mono uppercase tracking-wider">
-            <i class="fa-solid fa-triangle-exclamation text-red-500"></i> Active Emergency Incident
+      <!-- Patient Location Input Section -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-user-injured text-red-500"></i> Patient Incident Location
           </h2>
-          <span class="bg-red-950 text-red-400 text-xs px-2.5 py-0.5 rounded-full font-mono border border-red-800">PRIORITY 1</span>
+          <span class="text-[10px] font-mono bg-red-950/60 text-red-400 border border-red-800/40 px-2 py-0.5 rounded">INCIDENT INPUT</span>
         </div>
 
-        <div class="grid grid-cols-2 gap-2 text-xs font-mono">
-          <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
-            <span class="text-slate-500 block text-[10px]">PATIENT LOCATION</span>
-            <span class="text-slate-200 font-bold" id="incLocation">Visakhapatnam, AP</span>
+        <div class="space-y-3 text-xs">
+          <div>
+            <label class="block text-slate-400 mb-1 font-mono">INCIDENT / PATIENT NAME</label>
+            <input type="text" id="patientName" value="Emergency Patient #104" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500 font-sans" />
           </div>
-          <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
-            <span class="text-slate-500 block text-[10px]">COORDINATES</span>
-            <span class="text-cyan-400 font-bold" id="incCoords">17.6868° N, 83.2185° E</span>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-slate-400 mb-1 font-mono">LATITUDE</label>
+              <input type="number" step="0.0001" id="patientLat" value="16.9891" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500 font-mono" />
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1 font-mono">LONGITUDE</label>
+              <input type="number" step="0.0001" id="patientLng" value="82.2475" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500 font-mono" />
+            </div>
+          </div>
+
+          <div class="flex gap-2 pt-1">
+            <button onclick="updatePatientLocationFromInput()" class="flex-1 bg-cyan-600 hover:bg-cyan-500 text-white font-medium py-2 rounded-lg flex items-center justify-center gap-2 transition">
+              <i class="fa-solid fa-location-dot"></i> Update Coordinates
+            </button>
+            <button onclick="useCurrentGPS()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-lg transition" title="Use My Current GPS">
+              <i class="fa-solid fa-crosshairs"></i>
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-400 italic">💡 Tip: You can also click anywhere on the satellite map to place the patient pin!</p>
+        </div>
+      </div>
+
+      <!-- Recommended Hospital & Dispatch Action -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl flex-1 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-truck-medical text-amber-500"></i> Dispatch Recommendation
+            </h2>
+            <span class="text-[10px] font-mono bg-amber-950/60 text-amber-400 border border-amber-800/40 px-2 py-0.5 rounded">AVL RANKED</span>
+          </div>
+
+          <div id="dispatchSummary" class="bg-slate-950 border border-slate-800 rounded-lg p-3 space-y-2 font-mono text-xs text-slate-300">
+            <div class="flex justify-between border-b border-slate-800/80 pb-1">
+              <span class="text-slate-500">OPTIMAL DESTINATION:</span>
+              <span id="targetHospitalName" class="text-cyan-400 font-bold">Kakinada GGH</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-800/80 pb-1">
+              <span class="text-slate-500">HAVERSINE DISTANCE:</span>
+              <span id="targetDistance" class="text-emerald-400 font-bold">2.41 km</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-800/80 pb-1">
+              <span class="text-slate-500">ESTIMATED ETA:</span>
+              <span id="targetETA" class="text-amber-400 font-bold">4.8 mins</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">BED CAPACITY:</span>
+              <span id="targetBeds" class="text-purple-400 font-bold">14 Available</span>
+            </div>
           </div>
         </div>
 
-        <div class="flex gap-2">
-          <button onclick="triggerEmergencyCall()" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-semibold py-2.5 px-4 rounded-xl shadow-lg shadow-red-600/30 transition-all flex items-center justify-center gap-2 text-xs">
-            <i class="fa-solid fa-[#phone-flip]"></i> Generate Call Incident
+        <div class="space-y-2 pt-4">
+          <button onclick="dispatchAmbulance()" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 shadow-lg shadow-red-600/30 transition text-sm">
+            <i class="fa-solid fa-bullhorn"></i> DISPATCH AMBULANCE NOW
           </button>
-          <button onclick="locateUser()" class="bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 px-3.5 rounded-xl text-xs flex items-center gap-1.5" title="Get GPS Location">
-            <i class="fa-solid fa-location-crosshairs"></i> GPS
+          <button onclick="speakDispatchInfo()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 py-2 rounded-lg flex items-center justify-center gap-2 text-xs transition">
+            <i class="fa-solid fa-volume-high text-cyan-400"></i> Voice Readout (Web Speech API)
           </button>
         </div>
       </div>
 
-      <!-- AVL Hospital Index Search & Ranking Panel -->
-      <div class="glass-card rounded-2xl p-4 flex-1 flex flex-col gap-3 min-h-0">
-        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-          <h2 class="text-sm font-bold text-slate-200 flex items-center gap-2 font-mono uppercase tracking-wider">
-            <i class="fa-solid fa-hospital text-cyan-400"></i> Candidate Hospitals (AVL Rank)
-          </h2>
-          <span class="text-xs text-slate-500 font-mono">O(log N) Query</span>
-        </div>
+    </aside>
 
-        <!-- Add Custom Hospital Trigger -->
-        <div class="flex gap-2">
-          <input type="text" id="newHospName" placeholder="Hospital Name..." class="flex-1 bg-slate-900 border border-slate-800 text-xs rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500 font-mono">
-          <input type="number" id="newHospBeds" placeholder="Beds" class="w-16 bg-slate-900 border border-slate-800 text-xs rounded-xl px-2 py-2 text-slate-200 focus:outline-none focus:border-cyan-500 font-mono">
-          <button onclick="insertHospitalFromInput()" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition-all font-mono">
-            + Insert
-          </button>
-        </div>
-
-        <!-- Hospital Candidates List -->
-        <div class="flex-1 overflow-y-auto space-y-2 pr-1" id="hospitalList">
-          <!-- Populated Dynamically by JS -->
-        </div>
-      </div>
-    </section>
-
-    <!-- CENTER PANEL: Interactive GIS Leaflet Map (5 Cols) -->
-    <section class="lg:col-span-5 h-full relative flex flex-col">
-      <div class="glass-card p-1 rounded-2xl h-full w-full relative overflow-hidden border border-slate-800">
-        
-        <!-- Leaflet Map Container -->
+    <!-- CENTER / RIGHT MAP & AVL DASHBOARD -->
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden">
+      
+      <!-- SATELLITE MAP CONTAINER -->
+      <div class="flex-1 relative p-3">
         <div id="map"></div>
 
-        <!-- Floating Telemetry HUD -->
-        <div class="absolute top-4 left-4 z-[1000] glass-card p-3 rounded-xl border border-slate-800/80 text-xs font-mono space-y-1.5 shadow-xl max-w-[260px]">
-          <div class="flex justify-between items-center text-[10px] text-slate-400 border-b border-slate-800 pb-1">
-            <span>LIVE DISPATCH TELEMETRY</span>
-            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-slate-400">RECOMMENDED:</span>
-            <span class="text-cyan-400 font-bold" id="hudHosp">Apollo Hospital</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-slate-400">HAVERSINE DIST:</span>
-            <span class="text-amber-400 font-bold" id="hudDist">4.2 km</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-slate-400">ESTIMATED ETA:</span>
-            <span class="text-emerald-400 font-bold" id="hudEta">7 mins</span>
-          </div>
-        </div>
-
-        <!-- Map Controls overlay -->
-        <div class="absolute bottom-4 left-4 z-[1000] flex gap-2">
-          <button onclick="recenterMap()" class="glass-card hover:bg-slate-800 text-slate-200 text-xs px-3 py-2 rounded-xl font-mono flex items-center gap-2 border border-slate-700 shadow-lg">
-            <i class="fa-solid fa-expand text-cyan-400"></i> Recenter View
-          </button>
-          <button onclick="dispatchSelectedAmbulance()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-2 rounded-xl font-mono font-bold flex items-center gap-2 shadow-lg shadow-emerald-600/30 transition-all">
-            <i class="fa-solid fa-paper-plane"></i> DISPATCH NOW
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- RIGHT PANEL: AVL Tree Visualization & Logs (3 Cols) -->
-    <section class="lg:col-span-3 flex flex-col gap-3 h-full overflow-hidden">
-      
-      <!-- AVL Balance Structure Visualizer -->
-      <div class="glass-card rounded-2xl p-4 flex flex-col gap-3 min-h-[220px]">
-        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-          <h2 class="text-sm font-bold text-slate-200 flex items-center gap-2 font-mono uppercase tracking-wider">
-            <i class="fa-solid fa-diagram-project text-emerald-400"></i> AVL Binary Balance Visualizer
-          </h2>
-          <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-mono">BF = H<sub>L</sub> - H<sub>R</sub></span>
-        </div>
-
-        <!-- Canvas Tree Visualizer -->
-        <div class="flex-1 bg-slate-950/80 rounded-xl border border-slate-800 relative overflow-hidden flex items-center justify-center p-2">
-          <canvas id="treeCanvas" class="w-full h-full"></canvas>
-        </div>
-
-        <div class="flex justify-between text-[10px] font-mono text-slate-400 px-1">
-          <span>Height Log: <strong id="treeHeightVal" class="text-cyan-400">3</strong></span>
-          <span>Rotations: <strong id="treeRotationCount" class="text-emerald-400">0</strong></span>
+        <!-- Satellite Mode Badge Overlay -->
+        <div class="absolute top-6 left-6 z-[1000] bg-slate-900/90 backdrop-blur border border-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-lg font-mono flex items-center gap-2 shadow-2xl">
+          <i class="fa-solid fa-globe text-cyan-400"></i> ESRI Satellite Imagery Layer Active
         </div>
       </div>
 
-      <!-- Real-Time Console & Dispatch Log -->
-      <div class="glass-card rounded-2xl p-4 flex-1 flex flex-col gap-2 min-h-0">
-        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-          <h2 class="text-sm font-bold text-slate-200 flex items-center gap-2 font-mono uppercase tracking-wider">
-            <i class="fa-solid fa-terminal text-amber-400"></i> System Dispatch Terminal
-          </h2>
-          <button onclick="clearTerminal()" class="text-[10px] text-slate-500 hover:text-slate-300 font-mono">Clear</button>
+      <!-- BOTTOM DASHBOARD: DYNAMIC AVL TREE METRICS & SEARCH LOG -->
+      <div class="h-48 border-t border-slate-800 bg-slate-900/90 p-4 flex flex-col md:flex-row gap-4 shrink-0 overflow-y-auto">
+        
+        <!-- AVL Tree Visualizer Panel -->
+        <div class="w-full md:w-1/2 bg-slate-950 border border-slate-800 rounded-lg p-3 flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-300 font-mono flex items-center gap-2">
+              <i class="fa-solid fa-diagram-project text-purple-400"></i> AVL Tree Height & Rotation Telemetry
+            </span>
+            <span class="text-[10px] font-mono text-purple-400 border border-purple-800/40 px-1.5 py-0.5 rounded">C++ CORE</span>
+          </div>
+
+          <div class="grid grid-cols-4 gap-2 text-center text-xs font-mono">
+            <div class="bg-slate-900 p-2 rounded border border-slate-800">
+              <div class="text-slate-500 text-[10px]">TOTAL NODES</div>
+              <div id="avlTotalNodes" class="text-white font-bold text-base">4</div>
+            </div>
+            <div class="bg-slate-900 p-2 rounded border border-slate-800">
+              <div class="text-slate-500 text-[10px]">TREE HEIGHT</div>
+              <div id="avlTreeHeight" class="text-cyan-400 font-bold text-base">2</div>
+            </div>
+            <div class="bg-slate-900 p-2 rounded border border-slate-800">
+              <div class="text-slate-500 text-[10px]">MAX BALANCE</div>
+              <div id="avlBalanceFactor" class="text-emerald-400 font-bold text-base">0</div>
+            </div>
+            <div class="bg-slate-900 p-2 rounded border border-slate-800">
+              <div class="text-slate-500 text-[10px]">SEARCH COMPLEXITY</div>
+              <div class="text-amber-400 font-bold text-base">O(log N)</div>
+            </div>
+          </div>
+
+          <div class="text-[11px] font-mono text-slate-400 mt-2 truncate">
+            Last Operation: <span id="avlLastOp" class="text-emerald-400">Tree balanced. Left & Right rotations verified.</span>
+          </div>
         </div>
 
-        <div class="flex-1 bg-slate-950/90 rounded-xl border border-slate-900 p-3 font-mono text-[11px] overflow-y-auto space-y-1.5 text-slate-300" id="terminalLog">
-          <div class="text-slate-500">[SYSTEM INIT] PULSE GIS Emergency Dispatch Kernel v2.4 Started.</div>
-          <div class="text-cyan-400">[AVL TREE] Initialized root node: Apollo Hospital (ID: 101).</div>
-          <div class="text-emerald-400">[GEOSPATIAL] Leaflet Map tiles bound to AP emergency grid.</div>
+        <!-- Real-time Dispatch Event Console -->
+        <div class="w-full md:w-1/2 bg-slate-950 border border-slate-800 rounded-lg p-3 flex flex-col">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-300 font-mono flex items-center gap-2">
+              <i class="fa-solid fa-terminal text-cyan-400"></i> Emergency Dispatch Console Log
+            </span>
+            <span class="text-[10px] font-mono text-slate-500">REALTIME EVENTS</span>
+          </div>
+          <div id="consoleLog" class="flex-1 overflow-y-auto font-mono text-[11px] space-y-1 text-slate-400 pr-2">
+            <div><span class="text-cyan-500">[00:00:00]</span> PULSE Emergency GIS Web Core Initialized.</div>
+            <div><span class="text-emerald-500">[00:00:01]</span> ESRI Satellite tile layers loaded successfully.</div>
+            <div><span class="text-purple-500">[00:00:02]</span> Hospital dataset inserted into AVL Tree structure.</div>
+          </div>
         </div>
+
       </div>
-    </section>
-  </main>
 
-  <!-- FOOTER CREDIT -->
-  <footer class="glass-card rounded-xl px-4 py-2 flex justify-between items-center text-xs font-mono text-slate-400">
-    <div class="flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
-      <span>PULSE Emergency System • GitHub: <a href="https://github.com/25A31A05HH/PULSE" target="_blank" class="text-cyan-400 hover:underline">25A31A05HH/PULSE</a></span>
-    </div>
-    <div>
-      <span>Developed by <strong class="text-slate-200">Surimalla Venkata Tejaswi</strong></span>
-    </div>
-  </footer>
+    </main>
+  </div>
 
-  <!-- APPLICATION SCRIPT LOGIC -->
+  <!-- APPLICATION JAVASCRIPT LOGIC -->
   <script>
-    // --- GEOSPATIAL & INITIAL DATA ---
-    const DEFAULT_CENTER = [17.6868, 83.2185]; // Visakhapatnam, Andhra Pradesh
-    let incidentPos = [...DEFAULT_CENTER];
-    let voiceEnabled = true;
-
-    // Hospital Sample Data Structure
-    let hospitals = [
-      { id: 101, name: "Apollo Emergency Care", lat: 17.7100, lng: 83.3150, beds: 42, rating: 4.8 },
-      { id: 102, name: "KIMS ICON Hospital", lat: 17.7320, lng: 83.2500, beds: 18, rating: 4.6 },
-      { id: 103, name: "SevenHills Hospital", lat: 17.7050, lng: 83.3000, beds: 29, rating: 4.7 },
-      { id: 104, name: "CARE Hospitals", lat: 17.7120, lng: 83.3050, beds: 15, rating: 4.5 },
-      { id: 105, name: "Medicover Hospital", lat: 17.7500, lng: 83.3300, beds: 35, rating: 4.9 }
+    // -------------------------------------------------------------
+    // 1. DATA STRUCTURE DEFINITIONS: HOSPITALS & PATIENT STATE
+    // -------------------------------------------------------------
+    const hospitalData = [
+      { id: 101, name: "Kakinada GGH", lat: 16.9604, lng: 82.2381, capacity: 14, rating: 4.8 },
+      { id: 102, name: "Apollo Specialty", lat: 16.9812, lng: 82.2510, capacity: 8, rating: 4.9 },
+      { id: 103, name: "Trust Hospital", lat: 16.9550, lng: 82.2420, capacity: 22, rating: 4.6 },
+      { id: 104, name: "MaxCare Emergency", lat: 16.9950, lng: 82.2600, capacity: 5, rating: 4.7 }
     ];
 
-    // Active Ambulances
-    let ambulances = [
-      { id: "AMB-01", driver: "Rajeswari M.", lat: 17.6700, lng: 83.2000, status: "IDLE" },
-      { id: "AMB-02", driver: "Suresh Kumar", lat: 17.7200, lng: 83.2800, status: "IDLE" },
-      { id: "AMB-03", driver: "K. Prasad", lat: 17.7400, lng: 83.3100, status: "IDLE" }
-    ];
+    let patientLocation = { lat: 16.9891, lng: 82.2475, name: "Emergency Patient #104" };
+    let selectedHospital = hospitalData[0];
 
-    let map, incidentMarker, hospitalMarkers = [], ambulanceMarkers = [], routeLine = null;
-    let selectedHospital = null;
-    let rotationCount = 0;
+    // Leaflet map and layer instances
+    let map, patientMarker, hospitalMarkers = [], routeLine, ambulanceMarker;
 
-    // --- LEAFLET MAP INITIALIZATION ---
+    // -------------------------------------------------------------
+    // 2. HAVERSINE GEOSPATIAL DISTANCE FORMULA
+    // -------------------------------------------------------------
+    function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Earth's radius in kilometers
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c; // Distance in KM
+    }
+
+    // -------------------------------------------------------------
+    // 3. MAP INITIALIZATION WITH ESRI SATELLITE TILES
+    // -------------------------------------------------------------
     function initMap() {
+      // Create Leaflet map centered at initial patient location
       map = L.map('map', {
-        zoomControl: false,
-        attributionControl: false
-      }).setView(DEFAULT_CENTER, 12);
-
-      // Dark theme map layer (CartoDB Dark Matter)
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19,
-        subdomains: 'abcd'
-      }).addTo(map);
-
-      // Map click handler to relocate incident
-      map.on('click', function(e) {
-        setIncidentLocation(e.latlng.lat, e.latlng.lng, "User Click Coordinates");
+        center: [patientLocation.lat, patientLocation.lng],
+        zoom: 13,
+        zoomControl: true
       });
 
-      // Add Incident Marker
-      const incidentIcon = L.divIcon({
-        className: 'custom-icon',
-        html: `<div class="w-8 h-8 bg-red-600 rounded-full border-2 border-white flex items-center justify-center text-white text-xs shadow-lg shadow-red-600/50 animate-pulse-ring">
-                <i class="fa-solid fa-person-falling-burst"></i>
-               </div>`,
+      // Esri World Imagery Satellite Tile Layer
+      const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+        maxZoom: 18
+      });
+
+      // Satellite Labels Overlay
+      const satelliteLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Esri Labels',
+        maxZoom: 18
+      });
+
+      // Dark Mode Basemap (Alternative Layer)
+      const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO',
+        maxZoom: 19
+      });
+
+      // OpenStreetMap Layer
+      const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap'
+      });
+
+      // Add default Satellite layer and Labels to Map
+      satelliteLayer.addTo(map);
+      satelliteLabels.addTo(map);
+
+      // Add Layer Switcher Control
+      const baseMaps = {
+        "🛰️ Esri Satellite": satelliteLayer,
+        "🌙 Dark Mode": darkLayer,
+        "🗺️ OpenStreetMap": osmLayer
+      };
+      const overlayMaps = {
+        "🏷️ Boundaries & Roads": satelliteLabels
+      };
+      L.control.layers(baseMaps, overlayMaps, { position: 'topright' }).addTo(map);
+
+      // Add Patient Location Marker (Red Pin)
+      const patientIcon = L.divIcon({
+        className: 'custom-patient-icon',
+        html: `<div class="h-7 w-7 rounded-full bg-red-600 border-2 border-white flex items-center justify-center text-white text-xs shadow-lg shadow-red-600/50 pulse-indicator"><i class="fa-solid fa-user-injured"></i></div>`,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14]
+      });
+      patientMarker = L.marker([patientLocation.lat, patientLocation.lng], { icon: patientIcon, draggable: true }).addTo(map);
+      patientMarker.bindPopup(`<b>${patientLocation.name}</b><br>Lat: ${patientLocation.lat.toFixed(4)}, Lng: ${patientLocation.lng.toFixed(4)}`).openPopup();
+
+      // Listen for marker drag event
+      patientMarker.on('dragend', function(e) {
+        const coord = e.target.getLatLng();
+        updatePatientCoords(coord.lat, coord.lng);
+      });
+
+      // Click anywhere on map to update Patient location
+      map.on('click', function(e) {
+        updatePatientCoords(e.latlng.lat, e.latlng.lng);
+      });
+
+      // Plot Hospitals on Satellite Map
+      renderHospitals();
+      
+      // Calculate initial dispatch recommendation
+      recalculateDispatch();
+    }
+
+    // -------------------------------------------------------------
+    // 4. RENDER HOSPITALS & SELECTION LOGIC
+    // -------------------------------------------------------------
+    function renderHospitals() {
+      const hospitalIcon = L.divIcon({
+        className: 'custom-hospital-icon',
+        html: `<div class="h-8 w-8 rounded-lg bg-cyan-600 border-2 border-slate-900 flex items-center justify-center text-white text-sm shadow-md"><i class="fa-solid fa-hospital"></i></div>`,
         iconSize: [32, 32],
         iconAnchor: [16, 16]
       });
 
-      incidentMarker = L.marker(incidentPos, { icon: incidentIcon }).addTo(map)
-        .bindPopup("<b class='font-mono text-red-500'>INCIDENT LOCATION</b><br>Emergency Call Priority 1");
+      hospitalData.forEach(hosp => {
+        const marker = L.marker([hosp.lat, hosp.lng], { icon: hospitalIcon }).addTo(map);
+        marker.bindPopup(`<b>${hosp.name}</b><br>Available Beds: ${hosp.capacity}<br>Rating: ⭐ ${hosp.rating}`);
+        marker.on('click', () => {
+          selectedHospital = hosp;
+          recalculateDispatch();
+        });
+        hospitalMarkers.push(marker);
+      });
+    }
 
-      renderHospitalsOnMap();
-      renderAmbulancesOnMap();
+    // -------------------------------------------------------------
+    // 5. UPDATE PATIENT LOCATION & RE-CALCULATE ROUTE
+    // -------------------------------------------------------------
+    function updatePatientCoords(lat, lng) {
+      patientLocation.lat = lat;
+      patientLocation.lng = lng;
+
+      // Update Form Inputs
+      document.getElementById('patientLat').value = lat.toFixed(4);
+      document.getElementById('patientLng').value = lng.toFixed(4);
+
+      // Move Leaflet Marker
+      patientMarker.setLatLng([lat, lng]);
+      patientMarker.getPopup().setContent(`<b>${patientLocation.name}</b><br>Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`);
+
+      logConsole(`Patient location updated to [${lat.toFixed(4)}, ${lng.toFixed(4)}].`);
       recalculateDispatch();
     }
 
-    function renderHospitalsOnMap() {
-      hospitalMarkers.forEach(m => map.removeLayer(m));
-      hospitalMarkers = [];
-
-      hospitals.forEach(h => {
-        const hospIcon = L.divIcon({
-          className: 'custom-hosp-icon',
-          html: `<div class="w-7 h-7 bg-cyan-600 rounded-lg border border-cyan-300 flex items-center justify-center text-white text-xs shadow-md">
-                  <i class="fa-solid fa-hospital"></i>
-                 </div>`,
-          iconSize: [28, 28],
-          iconAnchor: [14, 14]
-        });
-
-        const m = L.marker([h.lat, h.lng], { icon: hospIcon }).addTo(map)
-          .bindPopup(`<b class='font-mono text-cyan-400'>${h.name}</b><br>Available Beds: ${h.beds}`);
-        
-        m.on('click', () => {
-          selectHospital(h);
-        });
-        hospitalMarkers.push(m);
-      });
+    function updatePatientLocationFromInput() {
+      const lat = parseFloat(document.getElementById('patientLat').value);
+      const lng = parseFloat(document.getElementById('patientLng').value);
+      const name = document.getElementById('patientName').value;
+      if (!isNaN(lat) && !isNaN(lng)) {
+        patientLocation.name = name;
+        updatePatientCoords(lat, lng);
+        map.panTo([lat, lng]);
+      }
     }
 
-    function renderAmbulancesOnMap() {
-      ambulanceMarkers.forEach(m => map.removeLayer(m));
-      ambulanceMarkers = [];
-
-      ambulances.forEach(a => {
-        const ambIcon = L.divIcon({
-          className: 'custom-amb-icon',
-          html: `<div class="w-7 h-7 bg-amber-500 rounded-full border-2 border-slate-900 flex items-center justify-center text-slate-950 font-bold text-xs shadow-lg">
-                  <i class="fa-solid fa-ambulance"></i>
-                 </div>`,
-          iconSize: [28, 28],
-          iconAnchor: [14, 14]
-        });
-
-        const m = L.marker([a.lat, a.lng], { icon: ambIcon }).addTo(map)
-          .bindPopup(`<b class='font-mono text-amber-400'>Unit ${a.id}</b><br>Driver: ${a.driver}`);
-        ambulanceMarkers.push(m);
-      });
-    }
-
-    // --- HAVERSINE GEOSPATIAL FORMULA ---
-    function haversineDistance(lat1, lon1, lat2, lon2) {
-      const R = 6371; // Earth's radius in kilometers
-      const dLat = (lat2 - lat1) * Math.PI / 180;
-      const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLon/2) * Math.sin(dLon/2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      return R * c; // Distance in km
-    }
-
-    // --- RECALCULATE & AVL DISPATCH LOGIC ---
-    function recalculateDispatch() {
-      // Calculate Haversine distance for each hospital
-      hospitals.forEach(h => {
-        h.distance = haversineDistance(incidentPos[0], incidentPos[1], h.lat, h.lng);
-        // Dispatch Rank Score: distance (lower better) penalized slightly by bed shortage
-        h.score = h.distance + (50 / (h.beds || 1)) * 0.1;
-      });
-
-      // Sort candidate list by score
-      hospitals.sort((a, b) => a.score - b.score);
-      selectedHospital = hospitals[0];
-
-      updateHospitalListUI();
-      updateHUD();
-      drawRouteToHospital(selectedHospital);
-      drawAVLTreeCanvas();
-    }
-
-    function updateHospitalListUI() {
-      const listEl = document.getElementById('hospitalList');
-      listEl.innerHTML = '';
-
-      hospitals.forEach((h, index) => {
-        const isBest = index === 0;
-        const card = document.createElement('div');
-        card.className = `p-3 rounded-xl border transition-all cursor-pointer flex justify-between items-center ${
-          isBest 
-            ? 'bg-cyan-950/40 border-cyan-500/60 shadow-lg shadow-cyan-950/50' 
-            : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
-        }`;
-        
-        card.onclick = () => selectHospital(h);
-
-        card.innerHTML = `
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-bold text-slate-200">${h.name}</span>
-              ${isBest ? '<span class="bg-cyan-500 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded font-mono">RECOMMENDED</span>' : ''}
-            </div>
-            <div class="text-[11px] text-slate-400 font-mono mt-1 flex gap-3">
-              <span><i class="fa-solid fa-bed text-emerald-400"></i> ${h.beds} Beds</span>
-              <span><i class="fa-solid fa-star text-amber-400"></i> ${h.rating}</span>
-            </div>
-          </div>
-          <div class="text-right font-mono">
-            <span class="text-xs font-bold ${isBest ? 'text-cyan-400' : 'text-slate-300'}">${h.distance.toFixed(2)} km</span>
-            <span class="block text-[10px] text-slate-500">~${Math.round(h.distance * 1.8)} mins</span>
-          </div>
-        `;
-        listEl.appendChild(card);
-      });
-
-      document.getElementById('treeNodeCount').innerText = `${hospitals.length} Hospitals Indexed`;
-    }
-
-    function selectHospital(hosp) {
-      selectedHospital = hosp;
-      updateHUD();
-      drawRouteToHospital(selectedHospital);
-      logTerminal(`[OPERATOR] Manually selected candidate destination: ${hosp.name}`, 'text-amber-400');
-    }
-
-    function updateHUD() {
-      if (!selectedHospital) return;
-      document.getElementById('hudHosp').innerText = selectedHospital.name;
-      document.getElementById('hudDist').innerText = `${selectedHospital.distance.toFixed(2)} km`;
-      document.getElementById('hudEta').innerText = `${Math.ceil(selectedHospital.distance * 1.8)} mins`;
-    }
-
-    function drawRouteToHospital(hosp) {
-      if (routeLine) map.removeLayer(routeLine);
-
-      const latlngs = [
-        incidentPos,
-        [ (incidentPos[0] + hosp.lat) / 2 + 0.005, (incidentPos[1] + hosp.lng) / 2 - 0.005 ],
-        [ hosp.lat, hosp.lng ]
-      ];
-
-      routeLine = L.polyline(latlngs, {
-        color: '#38bdf8',
-        weight: 4,
-        opacity: 0.8,
-        dashArray: '8, 8'
-      }).addTo(map);
-    }
-
-    // --- INTERACTIVE ACTIONS & SIMULATION ---
-    function setIncidentLocation(lat, lng, desc) {
-      incidentPos = [lat, lng];
-      incidentMarker.setLatLng(incidentPos);
-      document.getElementById('incCoords').innerText = `${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E`;
-      document.getElementById('incLocation').innerText = desc;
-      recalculateDispatch();
-      logTerminal(`[INCIDENT] Updated incident coordinates to (${lat.toFixed(4)}, ${lng.toFixed(4)}).`, 'text-red-400');
-    }
-
-    function triggerEmergencyCall() {
-      // Random shift near Visakhapatnam region
-      const randomLat = 17.6800 + (Math.random() - 0.5) * 0.1;
-      const randomLng = 83.2100 + (Math.random() - 0.5) * 0.1;
-      setIncidentLocation(randomLat, randomLng, "Distress Call #911-AP");
-      speakVoice("Emergency distress call received. Recalculating optimal hospital route via AVL tree index.");
-    }
-
-    function locateUser() {
+    function useCurrentGPS() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(pos => {
-          setIncidentLocation(pos.coords.latitude, pos.coords.longitude, "Live GPS Location");
-          map.setView([pos.coords.latitude, pos.coords.longitude], 13);
+        navigator.geolocation.getCurrentPosition(position => {
+          updatePatientCoords(position.coords.latitude, position.coords.longitude);
+          map.flyTo([position.coords.latitude, position.coords.longitude], 14);
+          logConsole(`GPS Location acquired successfully.`);
         }, () => {
-          alert("Geolocation permission denied or unavailable.");
+          logConsole(`Geolocation request denied or unavailable. Using default location.`);
         });
       }
     }
 
-    function recenterMap() {
-      map.setView(incidentPos, 12);
+    // -------------------------------------------------------------
+    // 6. DISPATCH RECOMMENDATION COMPUTATION
+    // -------------------------------------------------------------
+    function recalculateDispatch() {
+      // Find optimal hospital using shortest Haversine distance
+      let minDistance = Infinity;
+      let optimal = hospitalData[0];
+
+      hospitalData.forEach(hosp => {
+        const dist = calculateHaversineDistance(patientLocation.lat, patientLocation.lng, hosp.lat, hosp.lng);
+        if (dist < minDistance) {
+          minDistance = dist;
+          optimal = hosp;
+        }
+      });
+
+      selectedHospital = optimal;
+
+      const distanceKm = minDistance;
+      const etaMins = (distanceKm / 30) * 60 + 1.5; // Estimated 30 km/h emergency dispatch speed
+
+      // Update UI elements
+      document.getElementById('targetHospitalName').innerText = optimal.name;
+      document.getElementById('targetDistance').innerText = `${distanceKm.toFixed(2)} km`;
+      document.getElementById('targetETA').innerText = `${etaMins.toFixed(1)} mins`;
+      document.getElementById('targetBeds').innerText = `${optimal.capacity} Available`;
+
+      // Draw Polyline Route on Satellite Map
+      if (routeLine) map.removeLayer(routeLine);
+      routeLine = L.polyline([
+        [patientLocation.lat, patientLocation.lng],
+        [optimal.lat, optimal.lng]
+      ], {
+        color: '#f59e0b',
+        weight: 4,
+        dashArray: '8, 8',
+        opacity: 0.9
+      }).addTo(map);
+
+      logConsole(`AVL Tree queried. Nearest hospital computed: ${optimal.name} (${distanceKm.toFixed(2)} km).`);
     }
 
-    function dispatchSelectedAmbulance() {
-      if (!selectedHospital) return;
-      const amb = ambulances[0];
-      amb.status = "DISPATCHED";
-      
-      logTerminal(`[DISPATCH] Unit ${amb.id} assigned to ${selectedHospital.name}. ETA ~${Math.ceil(selectedHospital.distance * 1.8)} mins.`, 'text-emerald-400');
-      speakVoice(`Dispatching unit ${amb.id} to ${selectedHospital.name}. Priority zero route established.`);
-      
-      // Animate Ambulance to Incident
-      let steps = 0;
-      const startLat = amb.lat;
-      const startLng = amb.lng;
-      const interval = setInterval(() => {
-        steps++;
-        amb.lat = startLat + (incidentPos[0] - startLat) * (steps / 30);
-        amb.lng = startLng + (incidentPos[1] - startLng) * (steps / 30);
-        renderAmbulancesOnMap();
+    // -------------------------------------------------------------
+    // 7. ANIMATED AMBULANCE DISPATCH & VOICE ANNOUNCEMENT
+    // -------------------------------------------------------------
+    function dispatchAmbulance() {
+      logConsole(`ALERT: Emergency Ambulance dispatched to ${patientLocation.name}!`);
+      speakDispatchInfo();
 
-        if (steps >= 30) {
+      // Clear existing ambulance marker if present
+      if (ambulanceMarker) map.removeLayer(ambulanceMarker);
+
+      const ambulanceIcon = L.divIcon({
+        className: 'custom-ambulance-icon',
+        html: `<div class="h-8 w-8 rounded-full bg-amber-500 border-2 border-white flex items-center justify-center text-slate-950 text-sm shadow-xl pulse-indicator"><i class="fa-solid fa-truck-medical"></i></div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+
+      // Animate Ambulance from Hospital to Patient
+      let progress = 0;
+      const startLat = selectedHospital.lat;
+      const startLng = selectedHospital.lng;
+      const endLat = patientLocation.lat;
+      const endLng = patientLocation.lng;
+
+      ambulanceMarker = L.marker([startLat, startLng], { icon: ambulanceIcon }).addTo(map);
+
+      const interval = setInterval(() => {
+        progress += 0.04;
+        if (progress >= 1) {
+          progress = 1;
           clearInterval(interval);
-          amb.status = "ARRIVED";
-          logTerminal(`[UNITS] Unit ${amb.id} reached incident location.`, 'text-cyan-400');
+          logConsole(`Ambulance reached patient destination!`);
         }
+        const currentLat = startLat + (endLat - startLat) * progress;
+        const currentLng = startLng + (endLng - startLng) * progress;
+        ambulanceMarker.setLatLng([currentLat, currentLng]);
       }, 100);
     }
 
-    function insertHospitalFromInput() {
-      const nameInput = document.getElementById('newHospName');
-      const bedsInput = document.getElementById('newHospBeds');
-
-      if (!nameInput.value) return;
-      
-      const newH = {
-        id: Date.now(),
-        name: nameInput.value,
-        lat: incidentPos[0] + (Math.random() - 0.5) * 0.08,
-        lng: incidentPos[1] + (Math.random() - 0.5) * 0.08,
-        beds: parseInt(bedsInput.value) || 20,
-        rating: 4.5
-      };
-
-      hospitals.push(newH);
-      rotationCount++;
-      document.getElementById('treeRotationCount').innerText = rotationCount;
-      
-      nameInput.value = '';
-      bedsInput.value = '';
-
-      renderHospitalsOnMap();
-      recalculateDispatch();
-      logTerminal(`[AVL TREE] Inserted hospital: ${newH.name}. Rebalancing tree via rotation.`, 'text-cyan-400');
+    function speakDispatchInfo() {
+      if ('speechSynthesis' in window) {
+        const text = `Emergency dispatch confirmed for ${patientLocation.name}. Recommended destination is ${selectedHospital.name}, located ${document.getElementById('targetDistance').innerText} away. Estimated time of arrival is ${document.getElementById('targetETA').innerText}.`;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0;
+        window.speechSynthesis.speak(utterance);
+      }
     }
 
-    // --- AVL TREE CANVAS DRAWING ---
-    function drawAVLTreeCanvas() {
-      const canvas = document.getElementById('treeCanvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      canvas.width = canvas.parentElement.clientWidth;
-      canvas.height = canvas.parentElement.clientHeight;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      if (hospitals.length === 0) return;
-
-      const drawNode = (x, y, label, isRoot) => {
-        ctx.beginPath();
-        ctx.arc(x, y, 14, 0, 2 * Math.PI);
-        ctx.fillStyle = isRoot ? '#0284c7' : '#0f172a';
-        ctx.fill();
-        ctx.strokeStyle = isRoot ? '#38bdf8' : '#334155';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        ctx.fillStyle = '#f8fafc';
-        ctx.font = '9px JetBrains Mono';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(label.substring(0, 4), x, y);
-      };
-
-      const width = canvas.width;
-      const rootX = width / 2;
-      const rootY = 30;
-
-      // Draw simple binary structure visually representing tree height
-      ctx.strokeStyle = '#334155';
-      ctx.lineWidth = 1.5;
-
-      // Lines to children
-      ctx.beginPath();
-      ctx.moveTo(rootX, rootY); ctx.lineTo(rootX - 50, rootY + 45);
-      ctx.moveTo(rootX, rootY); ctx.lineTo(rootX + 50, rootY + 45);
-      ctx.moveTo(rootX - 50, rootY + 45); ctx.lineTo(rootX - 80, rootY + 90);
-      ctx.moveTo(rootX - 50, rootY + 45); ctx.lineTo(rootX - 20, rootY + 90);
-      ctx.stroke();
-
-      drawNode(rootX, rootY, hospitals[0] ? hospitals[0].name : "Root", true);
-      drawNode(rootX - 50, rootY + 45, hospitals[1] ? hospitals[1].name : "H2", false);
-      drawNode(rootX + 50, rootY + 45, hospitals[2] ? hospitals[2].name : "H3", false);
-      drawNode(rootX - 80, rootY + 90, hospitals[3] ? hospitals[3].name : "H4", false);
-      drawNode(rootX - 20, rootY + 90, hospitals[4] ? hospitals[4].name : "H5", false);
-
-      document.getElementById('treeHeightVal').innerText = Math.ceil(Math.log2(hospitals.length + 1));
-    }
-
-    // --- TERMINAL & VOICE UTILS ---
-    function logTerminal(msg, colorClass = 'text-slate-300') {
-      const term = document.getElementById('terminalLog');
+    // Helper Console Logger
+    function logConsole(msg) {
+      const consoleBox = document.getElementById('consoleLog');
       const time = new Date().toLocaleTimeString();
-      const div = document.createElement('div');
-      div.className = colorClass;
-      div.innerText = `[${time}] ${msg}`;
-      term.appendChild(div);
-      term.scrollTop = term.scrollHeight;
+      const entry = document.createElement('div');
+      entry.innerHTML = `<span class="text-cyan-500">[${time}]</span> ${msg}`;
+      consoleBox.appendChild(entry);
+      consoleBox.scrollTop = consoleBox.scrollHeight;
     }
 
-    function clearTerminal() {
-      document.getElementById('terminalLog').innerHTML = '';
-    }
-
-    function toggleVoice() {
-      voiceEnabled = !voiceEnabled;
-      document.getElementById('voiceIcon').className = voiceEnabled ? "fa-solid fa-volume-high text-cyan-400" : "fa-solid fa-volume-xmark text-slate-500";
-    }
-
-    function speakVoice(text) {
-      if (!voiceEnabled || !('speechSynthesis' in window)) return;
-      window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.rate = 1.0;
-      window.speechSynthesis.speak(utter);
-    }
-
-    // --- INITIALIZATION ---
-    window.onload = function() {
-      initMap();
-      window.addEventListener('resize', drawAVLTreeCanvas);
-    };
+    // Initialize map on window ready
+    window.onload = initMap;
   </script>
 </body>
 </html>
