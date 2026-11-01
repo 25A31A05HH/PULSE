@@ -86,20 +86,4 @@
                        |   - Vehicle Animation             |
                        |   - Web Speech API Voice Guidance |
                        +----------------+------------------+
-📂 Repository File Structure
-Plaintext
-PULSE/
-├── index.html                             # Single-File Interactive GIS Web Application
-├── pulse.cpp                              # C++ Backend Engine (AVL Tree & Algorithm Logic)
-├── PULSE_Professional_15_Slide_Presentation.pptx # Executive 15-Slide Presentation Deck
-├── README.md                              # System Documentation & Architecture Overview
-└── Screenshot 2026-11-01 162410.jpg      # Dashboard Screenshot Image
-🛠️ How to Apply to GitHub
-Open your repository https://github.com/25A31A05HH/PULSE.
 
-Ensure your uploaded image file name matches Screenshot 2026-11-01 162410.jpg.
-
-Open README.md, click the edit (pencil) icon, paste this entire text, and click Commit changes....
-
-📜 License & Credits
-Designed, architected, and built by Surimalla Venkata Tejaswi. Open for academic review, professional evaluation, and emergency technology portfolio demonstration.
