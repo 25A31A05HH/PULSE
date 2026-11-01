@@ -1,7 +1,7 @@
 # ⚡ PULSE — Global Emergency GIS Dispatch & AVL Tree Navigation System
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/25A31A05HH/PULSE/main/Screenshot%202026-11-01%20162410.jpg" alt="PULSE Emergency GIS Dispatcher Dashboard" width="100%">
+  <img src="https://raw.githubusercontent.com/25A31A05HH/PULSE/main/pulse-dashboard.jpg" alt="PULSE Emergency GIS Dispatcher Dashboard" width="100%">
 </p>
 
 <p align="center">
