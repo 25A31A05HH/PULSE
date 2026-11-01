@@ -1,11 +1,11 @@
 # ⚡ PULSE — Global Emergency GIS Dispatch & AVL Tree Navigation System
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/25A31A05HH/PULSE/main/pulse-dashboard.jpg" alt="PULSE Emergency GIS Dispatcher Dashboard" width="100%">
+  <img src="pulse-dashboard.jpg" alt="PULSE Emergency GIS Dispatcher Dashboard" width="100%">
 </p>
 
 <p align="center">
-  <strong>Intelligent Emergency Dispatch • Geospatial Intelligence • Advanced Data Structures</strong>
+  <strong>Intelligent Emergency Dispatch | Geospatial Intelligence | Advanced Data Structures</strong>
 </p>
 
 <p align="center">
@@ -20,11 +20,13 @@
 
 ## 🌐 Project Overview
 
-**PULSE (Global Emergency GIS Dispatch & AVL Tree Navigation System)** is an interactive emergency medical dispatch application designed to demonstrate how geospatial technologies, data structures, and intelligent routing algorithms can support emergency response coordination.
+**PULSE (Global Emergency GIS Dispatch & AVL Tree Navigation System)** is an interactive emergency medical dispatch application designed to demonstrate the integration of Geographic Information Systems (GIS), advanced data structures, geospatial algorithms, and intelligent navigation technologies.
 
-The system integrates interactive GIS mapping, patient location geocoding, self-balancing AVL Tree hospital indexing, Haversine distance calculations, ambulance route visualization, and browser-based voice guidance.
+The system combines interactive satellite mapping, patient address geocoding, self-balancing AVL Tree hospital indexing, Haversine distance calculations, ambulance movement simulation, and real-time browser-based voice guidance.
 
-PULSE demonstrates the combination of a web-based GIS interface and a C++ algorithm core to explore efficient hospital selection and emergency dispatch workflows.
+PULSE explores how algorithmic efficiency and geographical intelligence can support emergency response coordination through an integrated web application and C++ algorithm implementation.
+
+---
 
 ## 🔗 Live Application & Repository
 
@@ -35,158 +37,160 @@ PULSE demonstrates the combination of a web-based GIS interface and a C++ algori
 
 ## 👨‍💻 Developer & Architect
 
-| Detail | Information |
+| Category | Details |
 |---|---|
 | Developer | **Surimalla Venkata Tejaswi** |
 | Project Name | PULSE |
-| Project Domain | GIS, Emergency Dispatch & Data Structures |
-| Core Algorithm | AVL Tree |
-| Backend Algorithm Implementation | C++ |
-| Frontend | HTML, CSS & JavaScript |
-| Deployment | GitHub Pages |
+| Project Domain | GIS & Emergency Dispatch |
+| Core Data Structure | Self-Balancing AVL Tree |
+| Algorithm Implementation | C++ |
+| Frontend Technologies | HTML5, CSS3, JavaScript |
+| Mapping Framework | Leaflet.js |
+| Deployment Platform | GitHub Pages |
+| Project Year | 2026 |
 
-**Project Objective:** To demonstrate how efficient data structures and geospatial technologies can be combined to support emergency location analysis and hospital dispatch decision-making.
+**Project Objective:** To demonstrate the practical application of data structures, geographical computation, and interactive mapping in an emergency dispatch environment.
 
 ---
 
-## 🚀 Core Features
+# 🚀 Core Features
 
-### 1. 🛰️ Esri High-Resolution Satellite Mapping
+## 1. 🛰️ Esri High-Resolution Satellite Map Engine
 
-- Uses Esri World Imagery for satellite-based geographical visualization.
+- Integrates Esri World Imagery for satellite-based geographical visualization.
 - Supports multiple map layers, including Satellite, Dark Mode, and OpenStreetMap.
-- Provides interactive zooming, panning, and map navigation.
-- Allows operators to identify emergency locations visually.
+- Provides interactive zooming, panning, and navigation.
+- Enables operators to identify emergency locations visually.
 - Supports click-to-pin patient location selection.
-- Enables marker repositioning through interactive map controls.
+- Allows patient markers to be repositioned interactively.
 
-### 2. 📍 Patient Address Input & Geocoding
+## 2. 📍 Patient Address Input & Geocoding
 
-- Supports street addresses, landmarks, and location names.
-- Integrates the Nominatim geocoding service to convert address descriptions into geographical coordinates.
-- Supports manual latitude and longitude entry.
-- Enables emergency location selection through map interaction.
-- Displays patient coordinates for geographical analysis.
+- Supports full street addresses, landmarks, and location names.
+- Integrates the Nominatim geocoding service.
+- Converts human-readable addresses into geographical latitude and longitude coordinates.
+- Supports manual GPS coordinate entry.
+- Enables location selection directly through the interactive map.
 
 **Example Location:** Bhanugudi Junction, Kakinada.
 
-### 3. 🌳 Self-Balancing AVL Tree Core
+## 3. 🌳 Self-Balancing AVL Tree Core
 
-PULSE demonstrates AVL Tree-based hospital indexing for efficient data organization and searching.
+PULSE demonstrates AVL Tree-based hospital indexing for efficient data organization and retrieval.
 
 **Key capabilities:**
 
 - Self-balancing Binary Search Tree implementation.
-- Efficient insertion and searching operations.
-- Dynamic height calculation.
+- Efficient node insertion and searching.
+- Dynamic tree height calculation.
 - Balance factor monitoring.
-- Four AVL Tree rotations:
-  - LL – Left Left Rotation
-  - RR – Right Right Rotation
-  - LR – Left Right Rotation
-  - RL – Right Left Rotation
-- Tree height and balancing metrics.
+- Automatic tree balancing.
+- Four AVL Tree rotation mechanisms:
+  - LL — Left Left Rotation
+  - RR — Right Right Rotation
+  - LR — Left Right Rotation
+  - RL — Right Left Rotation
+- Tree height and rotation metrics.
 
-**Time Complexity:**
+### AVL Tree Time Complexity
 
-| Operation | Average/Worst-case Complexity |
+| Operation | Complexity |
 |---|---|
 | Search | O(log N) |
 | Insertion | O(log N) |
 | Deletion | O(log N) |
-| Tree Traversal | O(N) |
+| Traversal | O(N) |
 
-AVL Trees maintain logarithmic height, making them suitable for efficient indexed data retrieval.
+AVL Trees maintain logarithmic height, supporting efficient indexed data retrieval.
 
-### 4. 🚑 Emergency Dispatch & Routing Engine
+## 4. 🚑 Telemetry & Emergency Dispatch Routing
 
 - Calculates geographical distances between patient locations and candidate hospitals.
-- Uses the Haversine formula for great-circle distance estimation.
-- Identifies candidate hospitals based on calculated proximity.
-- Visualizes dispatch routes using map polylines.
-- Simulates ambulance movement between locations.
-- Displays dispatch telemetry and estimated travel information.
+- Implements the Haversine formula for great-circle distance estimation.
+- Supports proximity-based hospital selection.
+- Visualizes dispatch paths through map polylines.
+- Simulates ambulance movement from hospital to patient location.
+- Displays geographical and dispatch telemetry.
 
-**Important:** Geographical distance is not the same as actual road distance. The prototype's distance-based selection should not be interpreted as a verified fastest-road-route recommendation.
+## 5. 🔊 Web Speech API Voice Guidance
 
-### 5. 🔊 Real-Time Voice Guidance
-
-PULSE incorporates the browser Web Speech API to demonstrate voice-based dispatch announcements.
+PULSE incorporates browser-based speech synthesis for voice-assisted dispatch demonstrations.
 
 - Text-to-speech announcements.
 - Dispatch decision notifications.
-- Hands-free audio guidance.
-- Browser-supported voice output.
+- Audio-based navigation guidance.
+- Hands-free voice announcements where supported by the browser.
 
-### 6. 📊 Live Telemetry Dashboard
+## 6. 📊 Interactive Telemetry Dashboard
 
-The dashboard demonstrates important system metrics, including:
+The dashboard presents important system information, including:
 
 - Patient geographical coordinates.
 - Hospital indexing information.
 - AVL Tree height.
 - Rotation event metrics.
 - Distance calculations.
-- Dispatch information.
-- Navigation and routing visualization.
+- Dispatch details.
+- Route visualization.
+- Ambulance movement simulation.
 
 ---
 
-## 🏗️ System Architecture & Workflow
+# 🏗️ System Architecture & Workflow
 
-The PULSE system follows a structured emergency dispatch workflow.
+PULSE follows a structured emergency dispatch workflow consisting of six major stages.
 
 ```text
-              ┌───────────────────────────────────┐
-              │  1. Emergency Call / Operator     │
-              │     Address Search / GPS Input    │
-              └─────────────────┬─────────────────┘
-                                │
-                                ▼
-              ┌───────────────────────────────────┐
-              │  2. Geocoding Engine               │
-              │     Nominatim Address Conversion  │
-              │     Latitude / Longitude          │
-              └─────────────────┬─────────────────┘
-                                │
-                                ▼
-              ┌───────────────────────────────────┐
-              │  3. GIS Mapping Engine             │
-              │     Leaflet + Esri Satellite       │
-              │     Patient Location Visualization│
-              └─────────────────┬─────────────────┘
-                                │
-                                ▼
-              ┌───────────────────────────────────┐
-              │  4. AVL Tree Hospital Indexing     │
-              │     Hospital Data Organization    │
-              │     Self-Balancing Operations     │
-              └─────────────────┬─────────────────┘
-                                │
-                                ▼
-              ┌───────────────────────────────────┐
-              │  5. Distance & Routing Engine      │
-              │     Haversine Distance Calculation│
-              │     Dispatch Route Visualization  │
-              └─────────────────┬─────────────────┘
-                                │
-                                ▼
-              ┌───────────────────────────────────┐
-              │  6. Emergency Dispatch Interface   │
-              │     Ambulance Movement Simulation │
-              │     Voice Guidance & Telemetry    │
-              └───────────────────────────────────┘
+             ┌───────────────────────────────────┐
+             │  1. Emergency Call / Operator      │
+             │     Address Search / GPS Input    │
+             └─────────────────┬─────────────────┘
+                               │
+                               ▼
+             ┌───────────────────────────────────┐
+             │  2. Geocoding Engine               │
+             │     Nominatim Address Conversion  │
+             │     Latitude / Longitude          │
+             └─────────────────┬─────────────────┘
+                               │
+                               ▼
+             ┌───────────────────────────────────┐
+             │  3. GIS Mapping Engine             │
+             │     Leaflet + Esri Satellite       │
+             │     Patient Location Visualization│
+             └─────────────────┬─────────────────┘
+                               │
+                               ▼
+             ┌───────────────────────────────────┐
+             │  4. AVL Tree Hospital Indexing     │
+             │     Hospital Data Organization    │
+             │     Self-Balancing Operations     │
+             └─────────────────┬─────────────────┘
+                               │
+                               ▼
+             ┌───────────────────────────────────┐
+             │  5. Distance & Routing Engine      │
+             │     Haversine Distance Calculation│
+             │     Dispatch Route Visualization  │
+             └─────────────────┬─────────────────┘
+                               │
+                               ▼
+             ┌───────────────────────────────────┐
+             │  6. Emergency Dispatch Interface   │
+             │     Ambulance Movement Simulation │
+             │     Voice Guidance & Telemetry    │
+             └───────────────────────────────────┘
 ```
 
 ---
 
-## 🧮 Key Algorithms
+# 🧮 Key Algorithms & Technical Concepts
 
-### A. AVL Tree Algorithm
+## A. AVL Tree Algorithm
 
-The AVL Tree is a self-balancing Binary Search Tree in which the height difference between the left and right subtrees of every node is at most one.
+An AVL Tree is a self-balancing Binary Search Tree in which the height difference between the left and right subtrees of every node is at most one.
 
-**Balance Factor:**
+**Balance Factor Formula:**
 
 ```cpp
 Balance Factor = Height(Left Subtree) - Height(Right Subtree)
@@ -194,9 +198,11 @@ Balance Factor = Height(Left Subtree) - Height(Right Subtree)
 
 A node is balanced when its balance factor is -1, 0, or +1.
 
-### B. Haversine Distance Formula
+When an imbalance occurs, the AVL Tree performs the appropriate rotation to restore balance.
 
-The Haversine formula calculates the great-circle distance between two geographical coordinates.
+## B. Haversine Distance Formula
+
+The Haversine formula calculates the great-circle distance between two geographical coordinates on Earth's surface.
 
 \[
 a = \sin^2\left(\frac{\Delta\phi}{2}\right)
@@ -210,37 +216,39 @@ d = 2R\arctan2(\sqrt{a},\sqrt{1-a})
 
 Where:
 
-- \(R\) = Earth's mean radius.
-- \(\phi_1,\phi_2\) = Latitudes in radians.
-- \(\lambda_1,\lambda_2\) = Longitudes in radians.
-- \(d\) = Great-circle distance.
+- R = Earth's mean radius.
+- φ₁ and φ₂ = Latitudes in radians.
+- λ₁ and λ₂ = Longitudes in radians.
+- d = Great-circle distance.
 
-### C. Geocoding
+## C. Geocoding Algorithm
 
-The Nominatim service converts human-readable location descriptions into geographical latitude and longitude coordinates.
+The Nominatim geocoding service converts human-readable location descriptions into geographical coordinates.
+
+This allows operators to search for locations without manually entering GPS coordinates.
 
 ---
 
-## 🛠️ Technologies & Tools Used
+# 🛠️ Technologies & Tools Used
 
-| Technology | Purpose |
+| Technology | Application |
 |---|---|
 | C++ | AVL Tree and algorithm implementation |
 | HTML5 | Web application structure |
-| CSS3 | Dashboard styling and responsive interface |
+| CSS3 | Dashboard design and styling |
 | JavaScript | Application logic and interactions |
 | Leaflet.js | Interactive GIS mapping |
-| Esri World Imagery | Satellite map visualization |
-| OpenStreetMap | Open geographical map data |
+| Esri World Imagery | Satellite visualization |
+| OpenStreetMap | Geographical map data |
 | Nominatim | Address geocoding |
 | Haversine Formula | Geographical distance calculation |
 | Web Speech API | Voice announcements |
-| GitHub | Source code management |
+| Git & GitHub | Version control and source code management |
 | GitHub Pages | Web application deployment |
 
 ---
 
-## 📁 Project Directory Structure
+# 📁 Project Directory Structure
 
 ```text
 PULSE/
@@ -249,7 +257,7 @@ PULSE/
 │   └── Single-File Interactive GIS Web Application
 │
 ├── pulse.cpp
-│   └── C++ Backend Engine (AVL Tree & Algorithm Logic)
+│   └── C++ Core Engine (AVL Tree & Algorithm Logic)
 │
 ├── PULSE_Professional_15_Slide_Presentation.pptx
 │   └── Professional 15-Slide Project Presentation
@@ -257,35 +265,39 @@ PULSE/
 ├── README.md
 │   └── Project Documentation & System Architecture
 │
-└── Screenshot 2026-11-01 162410.jpg
+└── pulse-dashboard.jpg
     └── Emergency Dispatch Dashboard Screenshot
 ```
 
 ---
 
-## ⚙️ Running the Project
+# ⚙️ Installation & Execution
 
-### 1. Run the Web Application
+## 1. Access the Live Web Application
 
-You can access the deployed application directly:
+Visit the deployed application:
 
-[Launch PULSE Web Application](https://25a31a05hh.github.io/PULSE/)
+**[Launch PULSE](https://25a31a05hh.github.io/PULSE/)**
 
-Alternatively, clone the repository:
+## 2. Clone the GitHub Repository
 
 ```bash
 git clone https://github.com/25A31A05HH/PULSE.git
 ```
 
-Navigate into the project directory:
+Navigate to the project directory:
 
 ```bash
 cd PULSE
 ```
 
-Open `index.html` in your browser or use a local development server.
+## 3. Run the Web Application
 
-### 2. Compile and Run the C++ Core
+Open `index.html` in a modern web browser.
+
+Alternatively, use a local development server such as VS Code Live Server.
+
+## 4. Compile the C++ Core
 
 Ensure that a C++ compiler such as GCC or MinGW is installed.
 
@@ -309,48 +321,46 @@ Run on Linux/macOS:
 
 ---
 
-## 🎯 Applications & Use Cases
+# 🎯 Potential Applications & Use Cases
 
-PULSE demonstrates concepts relevant to:
-
-- Emergency medical dispatch systems.
-- Hospital location indexing.
-- Geospatial information systems.
+- Emergency medical dispatch coordination.
+- Hospital proximity analysis.
+- Geographical information systems.
 - Location-based service applications.
-- Ambulance dispatch coordination.
-- Algorithmic optimization.
-- Real-time geographical visualization.
+- Ambulance dispatch simulation.
 - Data Structures and Algorithms education.
+- Geospatial data visualization.
+- Algorithmic performance demonstrations.
 
 ---
 
-## 🔮 Future Enhancements
+# 🔮 Future Enhancements
 
-Potential future improvements include:
+Potential improvements to PULSE include:
 
 - Integration with verified hospital databases.
-- Real-time hospital bed and emergency department availability.
+- Real-time hospital bed availability.
 - Live GPS tracking through connected ambulance devices.
 - Road-network-based shortest-path routing.
 - Traffic-aware ambulance route optimization.
 - Backend API integration.
 - Secure patient information management.
-- Multi-user emergency operator dashboard.
-- Integration with verified emergency response services.
+- Multi-user emergency operator dashboards.
+- Integration with authorized emergency response services.
 
 ---
 
-## ⚠️ Disclaimer
+# ⚠️ Disclaimer
 
-PULSE is an **academic prototype and portfolio demonstration**, developed to explore the integration of GIS mapping, AVL Trees, geographical distance calculations, and emergency dispatch concepts.
+PULSE is an **academic prototype and portfolio demonstration** developed to explore the integration of GIS mapping, AVL Trees, geographical distance calculations, and emergency dispatch concepts.
 
-It is not a certified emergency medical dispatch platform and has not been validated for real-world emergency operations.
+It is not a certified emergency medical dispatch platform and has not been validated for real-world emergency medical operations.
 
-Hospital availability, ambulance locations, road travel times, and medical response decisions must be verified through authorized services before any operational use.
+The Haversine formula estimates straight-line geographical distance and does not independently determine the fastest road route. Hospital availability, ambulance locations, road travel times, and medical response decisions must be verified through authorized services before operational use.
 
 ---
 
-## 📜 License & Credits
+# 📜 License & Credits
 
 **Designed, Architected, and Developed by Surimalla Venkata Tejaswi.**
 
@@ -358,11 +368,11 @@ PULSE is an independently developed academic and portfolio project.
 
 ### Third-Party Technologies & Acknowledgements
 
-- [Esri](https://www.esri.com/) – Satellite imagery and mapping services.
-- [Leaflet](https://leafletjs.com/) – Interactive mapping framework.
-- [OpenStreetMap](https://www.openstreetmap.org/) – Open geographical map data.
-- [Nominatim](https://nominatim.org/) – Geocoding services.
-- Web Speech API – Browser-based speech synthesis.
+- [Esri](https://www.esri.com/) — Satellite imagery and mapping services.
+- [Leaflet](https://leafletjs.com/) — Interactive mapping framework.
+- [OpenStreetMap](https://www.openstreetmap.org/) — Open geographical map data.
+- [Nominatim](https://nominatim.org/) — Address geocoding services.
+- Web Speech API — Browser-based speech synthesis.
 
 Third-party technologies and geographical data remain subject to their respective licenses, attribution requirements, and usage policies.
 
@@ -374,7 +384,8 @@ Third-party technologies and geographical data remain subject to their respectiv
 | Developer | Surimalla Venkata Tejaswi |
 | Year | 2026 |
 | Domain | GIS & Emergency Dispatch |
-| Implementation | C++ & Web Technologies |
+| Core Language | C++ |
+| Frontend | HTML, CSS & JavaScript |
 | Project Status | Academic Prototype / Portfolio Demonstration |
 
 ---
