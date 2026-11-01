@@ -208,19 +208,7 @@ PULSE/
 
 
 
-## 🛠️ How to Apply to GitHub
 
-
-
-1. Open your repository `https://github.com/25A31A05HH/PULSE`.
-
-2. Ensure your uploaded image file name matches `Screenshot 2026-11-01 162410.jpg`.
-
-3. Open `README.md`, click the edit (pencil) icon, paste this entire text, and click **Commit changes...**.
-
-
-
----
 
 
 
